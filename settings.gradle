@@ -1,2 +1,4 @@
 rootProject.name = 'lib-board'
+include 'board-jagersro'
+include 'board-api'
 
