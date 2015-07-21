@@ -3,6 +3,13 @@ package game
 /**
  * Created by tejp on 16/07/15.
  */
-interface Action {
-    void execute()
+abstract class Action {
+
+    Game game
+
+    Action (Game game) {
+        this.game = game
+    }
+
+    abstract void execute()
 }
