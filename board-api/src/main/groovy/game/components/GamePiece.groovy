@@ -1,5 +1,7 @@
 package game.components
 
+import game.entitys.Entity
+
 import java.awt.Color
 
 /**
@@ -7,4 +9,5 @@ import java.awt.Color
  */
 class GamePiece {
     Color color
+    Entity tileEntity
 }
