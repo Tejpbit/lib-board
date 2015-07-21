@@ -8,14 +8,10 @@ class EventBus {
 
     Map<? extends Event, List<EventListener>> eventListenerMap = new HashMap<>();
 
-    void register(EventListener listener, Event event) {
+    Event register(Class<? extends Event> eventClazz, EventListener listener) {
         List<EventListener> specifiedListeners = eventListenerMap.containsKey(event) ? eventListenerMap.get(event) : new ArrayList<>()
         specifiedListeners.add(listener)
-
-    }
-
-    void register(EventListener listener, Event event, Event[] ... events) {
-        event.each {register(listener, it)}
+        event
     }
 
     void unregister(EventListener listener) {
