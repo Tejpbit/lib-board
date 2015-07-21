@@ -1,5 +1,7 @@
 package resources
 
+import events.ChanceCardEvent
+import events.GallopCardEvent
 import events.MoveHorseEvent
 import game.Game
 import game.components.*
@@ -93,5 +95,53 @@ class ResourceBuilder {
         card1.components.put(StringValues.class, strValues)
         card1.components.put(Effect.class, {entity -> game.eventBus.report(new MoveHorseEvent(horse: entity, steps: 4))} as Effect)
         gallopCards << card1
+    }
+
+    static List<Entity> createRaceTrack(int yearCohort, int[] chanceCardTileIndexes, int[] gallopCardTileIndexes) {
+
+        int length = 32 + 4 * (yearCohort - 2)
+
+        int[] multiplier = [3,4,5,10,20] as int[]
+
+        Entity[] track = new Entity[length]
+        Tile[] tiles = new Tile[length]
+
+        for (int i = 0; i < length; i++) {
+            tiles[i] = new Tile()
+        }
+
+
+        for (int i = 0; i < length; i++) {
+            track[i] = new Entity()
+            def intValues = new IntegerValues()
+            intValues.values.put("trackIndex", i)
+            intValues.values.put("yearCohort", yearCohort)
+            if (chanceCardTileIndexes.contains(i)) {
+                track[i].components.put(Effect.class, {entity -> game.eventBus.report(new ChanceCardEvent(horse: entity))} as Effect)
+            }
+            if (gallopCardTileIndexes.contains(i)) {
+                track[i].components.put(Effect.class, {entity -> game.eventBus.report(new GallopCardEvent(horse: entity))} as Effect)
+            }
+
+            if ((length - i) <= 5) {
+                intValues.values.put("multiplier", multiplier[(length - i) - 1])
+            } else {
+                intValues.values.put("multiplier", 2)
+            }
+
+            track[i].components.put(IntegerValues.class, intValues)
+            track[i].components.put(Tile.class, tiles[i])
+        }
+
+        for (int i = 0; i < length; i++) {
+            if (i != 0) {
+                tiles[i].predecessors << track[i-1]
+            }
+            if (i != length - 1) {
+                tiles[i].successors << track[i+1]
+            }
+        }
+
+        track
     }
 }
