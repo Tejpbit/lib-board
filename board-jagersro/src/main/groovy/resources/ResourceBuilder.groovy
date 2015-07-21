@@ -34,7 +34,7 @@ class ResourceBuilder {
         e.components.put(ECSColor.class, new ECSColor(horseColors[horseColorIndex]))
         horseColorIndex = (horseColorIndex + 1) % horseColors.length
         e.components.put(DataTable.class, new DataTable<Integer>(
-                "speedStats",
+                "speedTable",
                 [2,3,2,4,3,2,3,4,2,2,3,2] as Integer[]
         ))
 

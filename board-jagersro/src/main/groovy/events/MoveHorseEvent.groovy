@@ -6,7 +6,6 @@ import game.event.Event
 /**
  * Created by tejp on 17/07/15.
  */
-class MoveHorseEvent implements Event{
+class MoveHorseEvent implements Event {
     Entity horse
-    int steps
 }

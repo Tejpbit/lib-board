@@ -1,19 +1,18 @@
 package systems
 
-import events.RaceDoneEvent
+import events.ErrorEvent
+import events.MoveHorseEvent
 import events.RaceStartEvent
 import game.Game
+import game.components.DataTable
 import game.components.GamePiece
 import game.components.IntegerValues
 import game.components.Ownable
-import game.components.Player
 import game.components.StringValues
+import game.components.Tile
 import game.entitys.Entity
-import game.event.Event
-import game.event.EventListener
 import game.systems.ECSSystem
 
-import java.security.acl.Owner
 import java.util.stream.Collectors
 
 /**
@@ -26,11 +25,13 @@ class RaceGameFlowSystem extends ECSSystem {
     List<Entity> racingHorses = new ArrayList<>()
     List<Entity> racingPlayers = new ArrayList<>()
     int playerTurn = 0
+    int moveTurn = 0
 
     RaceGameFlowSystem(Game game) {
         super(game)
 
         listeners << game.eventBus.register(RaceStartEvent.class, {RaceStartEvent ev -> startRace() })
+        listeners << game.eventBus.register(MoveHorseEvent.class, {MoveHorseEvent ev -> moveHorse(ev) })
     }
 
     @Override
@@ -52,7 +53,7 @@ class RaceGameFlowSystem extends ECSSystem {
 
         racingPlayers =
                 racingHorses.stream()
-                        .map({h -> (h.components.get(Owner.class) as Ownable).owner})
+                        .map({h -> (h.components.get(Ownable.class) as Ownable).owner})
                         .distinct()
                         .sorted(Comparator.comparing({Entity e -> (e.components.get(StringValues.class) as StringValues).values.get("stable") }))
                         .collect(Collectors.toList())
@@ -74,6 +75,36 @@ class RaceGameFlowSystem extends ECSSystem {
             (horse.components.get(GamePiece.class) as GamePiece).tileEntity = matchingStartTrack
         }
 
+
+    }
+
+    void moveHorse(MoveHorseEvent ev) {
+        Entity owner =  (ev.horse.components.get(Ownable.class) as Ownable).owner
+        if ( owner !=  racingPlayers.get(playerTurn) ) {
+            String msg = String.format("Not your turn %s. Current player is %s",
+                    (owner.components.get(StringValues.class) as StringValues).values.get("name"),
+                    (racingPlayers.get(playerTurn).components.get(StringValues.class) as StringValues).values.get("name"))
+            game.eventBus.report(new ErrorEvent(msg: msg))
+
+        } else {
+            DataTable<Integer> speedTable = ev.horse.components.get(DataTable.class)
+            int move = speedTable.data[moveTurn]
+
+            Entity currentTile = (ev.horse.components.get(GamePiece.class) as GamePiece).tileEntity
+
+            while(move--) {
+                currentTile = (currentTile.components.get(Tile.class) as Tile).successors.iterator().next()
+            }
+
+        }
+    }
+
+    void nextPlayerTurn() {
+        playerTurn = (playerTurn + 1) % racingPlayers.size()
+    }
+
+    void nextMoveTurn() {
+        moveTurn++
     }
 
 
