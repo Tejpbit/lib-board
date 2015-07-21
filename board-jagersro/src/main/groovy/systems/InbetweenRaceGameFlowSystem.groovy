@@ -22,17 +22,12 @@ class InbetweenRaceGameFlowSystem extends ECSSystem {
 
     }
 
-    @Override
-    void onEvent(Event event) {
-        switch (event) {
-            case event instanceof RaceDoneEvent:
-                prepareBetweenRaceTurn()
-                break
 
-        }
-    }
+
 
     void prepareBetweenRaceTurn() {
 
     }
+
+
 }
