@@ -1,8 +1,6 @@
 package systems
 
-import events.RaceDoneEvent
 import game.Game
-import game.event.Event
 import game.systems.ECSSystem
 
 /**

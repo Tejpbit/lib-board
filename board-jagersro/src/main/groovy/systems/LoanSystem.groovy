@@ -17,7 +17,7 @@ class LoanSystem extends ECSSystem implements EventListener<Event> { //TODO take
 
     @Override
     void doAction() {
-        game.entitys.stream().filter({it.components.containsKey(Player.class)})
+        game.entitys.stream().filter({it.components.containsKey(Player)})
         // Säg till lånesystemet att ta ränta baserat på hur mycket spelarna har lånat
         // säg till att vi väntar på actions nu
 

@@ -28,12 +28,12 @@ class ResourceBuilder {
         def strValues = new StringValues()
         strValues.values.put("name", name)
 
-        e.components.put(Ownable.class, new Ownable(owner: owner))
-        e.components.put(IntegerValues.class, intValues)
-        e.components.put(StringValues.class, strValues)
-        e.components.put(ECSColor.class, new ECSColor(horseColors[horseColorIndex]))
+        e.components.put(Ownable, new Ownable(owner: owner))
+        e.components.put(IntegerValues, intValues)
+        e.components.put(StringValues, strValues)
+        e.components.put(ECSColor, new ECSColor(horseColors[horseColorIndex]))
         horseColorIndex = (horseColorIndex + 1) % horseColors.length
-        e.components.put(DataTable.class, new DataTable<Integer>(
+        e.components.put(DataTable, new DataTable<Integer>(
                 "speedTable",
                 [2,3,2,4,3,2,3,4,2,2,3,2] as Integer[]
         ))
@@ -54,20 +54,20 @@ class ResourceBuilder {
         strValues.put("stable", stable++)
 
 
-        e.components.put(IntegerValues.class, intValues)
-        e.components.put(StringValues.class, strValues)
-        e.components.put(Inventory.class, new Inventory())
-        e.components.put(DataMap.class, new DataMap<Color, Integer>("totalisator"))
+        e.components.put(IntegerValues, intValues)
+        e.components.put(StringValues, strValues)
+        e.components.put(Inventory, new Inventory())
+        e.components.put(DataMap, new DataMap<Color, Integer>("totalisator"))
 
         e
     }
 
     static Entity createBank() {
         Entity e = new Entity()
-        e.components.put(Inventory.class, new Inventory())
+        e.components.put(Inventory, new Inventory())
         def strValues = new StringValues()
         strValues.values.put("bank", "")
-        e.components.put(StringValues.class, strValues)
+        e.components.put(StringValues, strValues)
         e
     }
 
@@ -79,8 +79,8 @@ class ResourceBuilder {
         strValues.values.put("name", "Chanskort")
         strValues.values.put("text", "Din häst är sämst. Flytta hästen bakåt 3 steg.")
 
-        card1.components.put(StringValues.class, strValues)
-        card1.components.put(Effect.class, {entity -> game.eventBus.report(new MoveHorseEvent(horse: entity, steps: -3))} as Effect)
+        card1.components.put(StringValues, strValues)
+        card1.components.put(Effect, {entity -> game.eventBus.report(new MoveHorseEvent(horse: entity, steps: -3))} as Effect)
         chanceCards << card1
     }
 
@@ -92,8 +92,8 @@ class ResourceBuilder {
         strValues.values.put("name", "Gallopkort")
         strValues.values.put("text", "Din häst är bastastast. Flytta hästen frammåt 4 steg.")
 
-        card1.components.put(StringValues.class, strValues)
-        card1.components.put(Effect.class, {entity -> game.eventBus.report(new MoveHorseEvent(horse: entity, steps: 4))} as Effect)
+        card1.components.put(StringValues, strValues)
+        card1.components.put(Effect, {entity -> game.eventBus.report(new MoveHorseEvent(horse: entity, steps: 4))} as Effect)
         gallopCards << card1
     }
 
@@ -117,10 +117,10 @@ class ResourceBuilder {
             intValues.values.put("trackIndex", i)
             intValues.values.put("yearCohort", yearCohort)
             if (chanceCardTileIndexes.contains(i)) {
-                track[i].components.put(Effect.class, {entity -> game.eventBus.report(new ChanceCardEvent(horse: entity))} as Effect)
+                track[i].components.put(Effect, {entity -> game.eventBus.report(new ChanceCardEvent(horse: entity))} as Effect)
             }
             if (gallopCardTileIndexes.contains(i)) {
-                track[i].components.put(Effect.class, {entity -> game.eventBus.report(new GallopCardEvent(horse: entity))} as Effect)
+                track[i].components.put(Effect, {entity -> game.eventBus.report(new GallopCardEvent(horse: entity))} as Effect)
             }
 
             if ((length - i) <= 5) {
@@ -129,8 +129,8 @@ class ResourceBuilder {
                 intValues.values.put("multiplier", 2)
             }
 
-            track[i].components.put(IntegerValues.class, intValues)
-            track[i].components.put(Tile.class, tiles[i])
+            track[i].components.put(IntegerValues, intValues)
+            track[i].components.put(Tile, tiles[i])
         }
 
         for (int i = 0; i < length; i++) {
